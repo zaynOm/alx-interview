@@ -1,52 +1,52 @@
 #!/usr/bin/python3
-"Log parsing"
-import re
 import sys
+import signal
 
 
-def print_data(file_size, status_codes):
-    "Print the statistics"
-    print(f"File size: {file_size}")
-    for code, count in sorted(status_codes.items()):
-        if count > 0:
-            print(f"{code}: {count}", flush=True)
+def signal_handler(sig, frame):
+    """Signal handler for SIGINT"""
+    print_stats()
+    sys.exit(0)
 
 
-def main():
-    file_size = 0
-    status_codes = {
-        "200": 0,
-        "301": 0,
-        "400": 0,
-        "401": 0,
-        "403": 0,
-        "404": 0,
-        "405": 0,
-        "500": 0,
-    }
-
-    try:
-        for i, line in enumerate(sys.stdin):
-            if i != 0 and i % 10 == 0:
-                print_data(file_size, status_codes)
-
-            line = line.rstrip()
-            pattern = r"""
-                [\d.]+
-                \s-\s
-                \[[\d\- :.]+\]
-                \s"GET\s\/projects\/260\sHTTP\/1\.1"\s
-                (\d{3})
-                \s(\d+)
-            """
-            res = re.search(pattern, line, re.X)
-            code, size = res.groups()
-            if code in status_codes:
-                file_size += int(size)
-                status_codes[code] = status_codes.get(code, 0) + 1
-    except (KeyboardInterrupt, EOFError):
-        print_data(file_size, status_codes)
+def print_stats():
+    """Prints the stats of the log parsing"""
+    print("File size: {}".format(total_size))
+    for code in sorted(status_codes.keys()):
+        if status_codes[code] > 0:
+            print("{}: {}".format(code, status_codes[code]))
 
 
-if __name__ == "__main__":
-    main()
+status_codes = {
+    "200": 0,
+    "301": 0,
+    "400": 0,
+    "401": 0,
+    "403": 0,
+    "404": 0,
+    "405": 0,
+    "500": 0,
+}
+total_size = 0
+line_count = 0
+
+signal.signal(signal.SIGINT, signal_handler)
+
+try:
+    for line in sys.stdin:
+        try:
+            data = line.split()
+            size = int(data[-1])
+            status_code = data[-2]
+            if status_code in status_codes:
+                status_codes[status_code] += 1
+            total_size += size
+        except Exception:
+            pass
+        line_count += 1
+        if line_count % 10 == 0:
+            print_stats()
+except KeyboardInterrupt:
+    print_stats()
+    raise
+print_stats()
