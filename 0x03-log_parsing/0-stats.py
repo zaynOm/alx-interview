@@ -4,6 +4,7 @@ import sys
 
 
 def print_data(file_size, status_codes):
+    "Print the statistics"
     print(f"File size: {file_size}")
     for code, count in sorted(status_codes.items()):
         if count > 0:
@@ -11,6 +12,7 @@ def print_data(file_size, status_codes):
 
 
 def main():
+    "Parse the logs"
     file_size = 0
     status_codes = {
         "200": 0,
