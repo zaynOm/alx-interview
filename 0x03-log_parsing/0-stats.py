@@ -5,7 +5,16 @@ import sys
 import signal
 
 file_size = 0
-status_code = {}
+status_code = {
+    "200": 0,
+    "301": 0,
+    "400": 0,
+    "401": 0,
+    "403": 0,
+    "404": 0,
+    "405": 0,
+    "500": 0,
+}
 
 
 def print_data():
@@ -38,7 +47,10 @@ try:
             \s(\d+)
         """
         res = re.search(pattern, line, re.X)
-        file_size += int(res.group(2))
-        status_code[res.group(1)] = status_code.get(res.group(1), 0) + 1
-except Exception as e:
-    raise e
+        code, size = res.groups()
+        if code in status_code:
+            file_size += int(size)
+            status_code[code] = status_code.get(code, 0) + 1
+except KeyboardInterrupt:
+    signal_handler(signal.SIGINT, None)
+    raise
