@@ -2,7 +2,7 @@
 "Log parsing"
 import re
 import sys
-import signal
+
 
 file_size = 0
 status_code = {
@@ -21,16 +21,9 @@ def print_data():
     "Print the statistics"
     print(f"File size: {file_size}")
     for code, count in sorted(status_code.items()):
-        print(f"{code}: {count}")
+        if count > 0:
+            print(f"{code}: {count}", flush=True)
 
-
-def signal_handler(signal, frame):
-    "Handle keyboard interruption"
-    print_data()
-    sys.exit(0)
-
-
-signal.signal(signal.SIGINT, signal_handler)
 
 try:
     for i, line in enumerate(sys.stdin):
@@ -52,5 +45,4 @@ try:
             file_size += int(size)
             status_code[code] = status_code.get(code, 0) + 1
 except KeyboardInterrupt:
-    signal_handler(signal.SIGINT, None)
-    raise
+    print_data()
