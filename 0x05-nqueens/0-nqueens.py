@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-"""N queens"""
-
-
+"""N queens problem"""
 import sys
 
 
@@ -40,17 +38,17 @@ def main():
     """doc doc doc"""
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
-        sys.exit(1)
+        exit(1)
 
     try:
         board_size = int(sys.argv[1])
     except ValueError:
         print("N must be a number")
-        sys.exit(1)
+        exit(1)
 
     if board_size < 4:
         print("N must be at least 4")
-        sys.exit(1)
+        exit(1)
 
     solutions = solve_queens_problem(board_size)
     for solution in solutions:
