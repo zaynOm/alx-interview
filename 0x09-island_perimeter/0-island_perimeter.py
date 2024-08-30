@@ -1,4 +1,4 @@
-#!/usr/bin/env3
+#!/usr/bin/python3
 """Island Perimeter"""
 
 
