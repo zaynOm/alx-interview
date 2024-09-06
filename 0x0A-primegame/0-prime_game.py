@@ -3,17 +3,19 @@
 
 
 def generate_primes(num):
-    """generate prime numbers up to num"""
-    nums = primes = []
-    if num > 2:
-        nums = [2] + list(range(3, num + 1, 2))
-    for i in nums:
-        for j in range(2, i + 1):
-            if j > i / 2:
-                primes.append(i)
-                break
-            if i % j == 0:
-                break
+    """Generate prime numbers up to num using the Sieve of Eratosthenes"""
+    if num < 2:
+        return []
+    sieve = [True] * (num + 1)
+    sieve[0] = sieve[1] = False  # 0 and 1 are not primes
+    primes = []
+
+    for i in range(2, num + 1):
+        if sieve[i]:
+            primes.append(i)
+            for j in range(i * i, num + 1, i):
+                sieve[j] = False
+
     return primes
 
 
@@ -33,5 +35,4 @@ def isWinner(x, nums):
 
     if ben == maria:
         return None
-    res = "Ben" if ben > maria else "Maria"
-    return res
+    return "Ben" if ben > maria else "Maria"
