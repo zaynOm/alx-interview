@@ -19,6 +19,9 @@ def generate_primes(num):
 
 def isWinner(x, nums):
     """Find the winner between Maria and Ben"""
+    if x < 1 or nums is None:
+        return None
+
     maria = ben = 0
 
     for num in nums:
@@ -28,6 +31,7 @@ def isWinner(x, nums):
         else:
             maria += 1
 
+    if ben == maria:
+        return None
     res = "Ben" if ben > maria else "Maria"
-
-    return res or None
+    return res
